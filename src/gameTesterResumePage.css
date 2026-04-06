@@ -25,6 +25,7 @@ body {
   min-height: 100vh;
   font-family: "Rajdhani", sans-serif;
   color: var(--text);
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top left, rgba(114, 231, 255, 0.15), transparent 24%),
     radial-gradient(circle at 80% 20%, rgba(95, 124, 255, 0.2), transparent 24%),
@@ -80,6 +81,8 @@ a {
 .battlefield-canvas {
   width: 100%;
   height: 100%;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .battlefield-vignette {
@@ -107,6 +110,8 @@ a {
   opacity: 0.22;
   pointer-events: none;
   z-index: 1;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .orb-a {
@@ -146,6 +151,7 @@ a {
   border-radius: 28px;
   background: rgba(5, 10, 20, 0.64);
   backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
 }
 
 .brand-block {
@@ -335,7 +341,9 @@ h3 {
     var(--panel);
   box-shadow: var(--shadow);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   overflow: hidden;
+  contain: layout paint;
 }
 
 .hero-panel,
@@ -374,11 +382,29 @@ h3 {
 
 .scanner-line {
   position: absolute;
-  inset: -2px 0 auto 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, rgba(114, 231, 255, 0.88), transparent);
-  box-shadow: 0 0 18px rgba(114, 231, 255, 0.8);
-  animation: sweep 4s linear infinite;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(114, 231, 255, 0.95), transparent);
+  box-shadow:
+    0 0 10px rgba(114, 231, 255, 0.75),
+    0 0 18px rgba(114, 231, 255, 0.35);
+  will-change: top;
+  animation: scannerSweep 1.9s linear infinite alternate;
+}
+
+.scanner-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(183, 255, 122, 0.95), transparent);
+  animation: scannerPulse 1.4s ease-in-out infinite;
 }
 
 .stat-grid {
@@ -402,6 +428,20 @@ h3 {
 .section {
   padding: 28px 0 64px;
   position: relative;
+  content-visibility: auto;
+  contain-intrinsic-size: 900px;
+}
+
+.hero-copy,
+.hero-panel,
+.stat-card,
+.skill-card,
+.timeline-card,
+.systems-card,
+.contact-card {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .section-heading {
@@ -519,17 +559,24 @@ h3 {
   opacity: 0.55;
 }
 
-@keyframes sweep {
+@keyframes scannerSweep {
   0% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(220px);
+    top: 0;
   }
 
   100% {
-    transform: translateY(0);
+    top: calc(100% - 2px);
+  }
+}
+
+@keyframes scannerPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
   }
 }
 
@@ -575,5 +622,21 @@ h3 {
   .contact-grid span {
     width: 100%;
     justify-content: center;
+  }
+
+  .topbar,
+  .hero-panel,
+  .skill-card,
+  .timeline-card,
+  .systems-card,
+  .contact-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }

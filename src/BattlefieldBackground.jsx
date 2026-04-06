@@ -25,32 +25,76 @@ export default function BattlefieldBackground() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
+    const context = canvas?.getContext("2d", { alpha: false, desynchronized: true });
 
     if (!canvas || !context) return undefined;
 
     let width = 0;
     let height = 0;
     let frame = 0;
+    let resizedQueued = false;
     let last = performance.now();
+    let skyGradient = null;
+    let hazeGradient = null;
+    let fogGradient = null;
+    let running = true;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const isLowPowerDevice =
+      (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+      (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+      window.innerWidth < 768;
+    const quality = reducedMotion.matches || isLowPowerDevice ? "low" : "high";
+    const fpsCap = quality === "low" ? 30 : 60;
+    const minFrameDelta = 1000 / fpsCap;
     const state = {};
+
+    const scaledCounts =
+      quality === "low"
+        ? {
+            stars: Math.ceil(COUNTS.stars * 0.45),
+            jets: Math.max(3, Math.ceil(COUNTS.jets * 0.55)),
+            tanks: Math.max(2, Math.ceil(COUNTS.tanks * 0.5)),
+            hovers: Math.max(2, Math.ceil(COUNTS.hovers * 0.5)),
+            bolts: Math.ceil(COUNTS.bolts * 0.45),
+            bursts: Math.ceil(COUNTS.bursts * 0.5),
+            sigils: Math.ceil(COUNTS.sigils * 0.5)
+          }
+        : COUNTS;
+
+    const makeGradients = () => {
+      skyGradient = context.createLinearGradient(0, 0, 0, height);
+      skyGradient.addColorStop(0, "#040915");
+      skyGradient.addColorStop(0.45, "#091529");
+      skyGradient.addColorStop(0.8, "#0b1c35");
+      skyGradient.addColorStop(1, "#08121f");
+
+      hazeGradient = context.createRadialGradient(width * 0.5, height * 0.42, 20, width * 0.5, height * 0.42, width * 0.55);
+      hazeGradient.addColorStop(0, "rgba(117,117,255,0.18)");
+      hazeGradient.addColorStop(0.45, "rgba(121,63,250,0.08)");
+      hazeGradient.addColorStop(1, "rgba(0,0,0,0)");
+
+      fogGradient = context.createLinearGradient(0, height * 0.4, 0, height);
+      fogGradient.addColorStop(0, "rgba(2,5,10,0)");
+      fogGradient.addColorStop(0.55, "rgba(5,12,24,0.18)");
+      fogGradient.addColorStop(1, "rgba(2,5,12,0.64)");
+    };
 
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const ratio = Math.min(window.devicePixelRatio || 1, quality === "low" ? 1.25 : 2);
       canvas.width = width * ratio;
       canvas.height = height * ratio;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      makeGradients();
       seed();
     };
 
     const seed = () => {
-      state.stars = Array.from({ length: COUNTS.stars }, () => ({
+      state.stars = Array.from({ length: scaledCounts.stars }, () => ({
         x: randomBetween(0, width),
         y: randomBetween(0, height * 0.7),
         r: randomBetween(0.8, 2.2),
@@ -58,7 +102,7 @@ export default function BattlefieldBackground() {
         p: randomBetween(0.4, 1.5)
       }));
 
-      state.jets = Array.from({ length: COUNTS.jets }, (_, index) => ({
+      state.jets = Array.from({ length: scaledCounts.jets }, (_, index) => ({
         x: randomBetween(-140, width + 140),
         y: randomBetween(height * 0.14, height * 0.5),
         s: randomBetween(0.6, 1.3),
@@ -67,7 +111,7 @@ export default function BattlefieldBackground() {
         color: COLORS[index % COLORS.length]
       }));
 
-      state.tanks = Array.from({ length: COUNTS.tanks }, (_, index) => ({
+      state.tanks = Array.from({ length: scaledCounts.tanks }, (_, index) => ({
         x: randomBetween(-120, width + 120),
         y: randomBetween(height * 0.74, height * 0.88),
         s: randomBetween(0.95, 1.35),
@@ -76,7 +120,7 @@ export default function BattlefieldBackground() {
         turret: randomBetween(0, Math.PI * 2)
       }));
 
-      state.hovers = Array.from({ length: COUNTS.hovers }, (_, index) => ({
+      state.hovers = Array.from({ length: scaledCounts.hovers }, (_, index) => ({
         x: randomBetween(-160, width + 160),
         y: randomBetween(height * 0.45, height * 0.72),
         s: randomBetween(0.8, 1.2),
@@ -84,7 +128,7 @@ export default function BattlefieldBackground() {
         phase: randomBetween(0, Math.PI * 2)
       }));
 
-      state.bolts = Array.from({ length: COUNTS.bolts }, (_, index) => ({
+      state.bolts = Array.from({ length: scaledCounts.bolts }, (_, index) => ({
         x: randomBetween(0, width),
         y: randomBetween(height * 0.22, height * 0.92),
         vx: randomBetween(120, 300) * (index % 2 === 0 ? 1 : -1),
@@ -93,7 +137,7 @@ export default function BattlefieldBackground() {
         w: randomBetween(1.2, 3.4)
       }));
 
-      state.bursts = Array.from({ length: COUNTS.bursts }, () => ({
+      state.bursts = Array.from({ length: scaledCounts.bursts }, () => ({
         x: randomBetween(0, width),
         y: randomBetween(height * 0.18, height * 0.85),
         r: randomBetween(20, 60),
@@ -102,7 +146,7 @@ export default function BattlefieldBackground() {
         color: Math.random() > 0.5 ? "114,231,255" : "255,138,91"
       }));
 
-      state.sigils = Array.from({ length: COUNTS.sigils }, (_, index) => ({
+      state.sigils = Array.from({ length: scaledCounts.sigils }, (_, index) => ({
         x: randomBetween(width * 0.08, width * 0.92),
         y: randomBetween(height * 0.18, height * 0.78),
         r: randomBetween(20, 48),
@@ -113,12 +157,7 @@ export default function BattlefieldBackground() {
     };
 
     const drawBackground = (time) => {
-      const sky = context.createLinearGradient(0, 0, 0, height);
-      sky.addColorStop(0, "#040915");
-      sky.addColorStop(0.45, "#091529");
-      sky.addColorStop(0.8, "#0b1c35");
-      sky.addColorStop(1, "#08121f");
-      context.fillStyle = sky;
+      context.fillStyle = skyGradient;
       context.fillRect(0, 0, width, height);
 
       for (const star of state.stars) {
@@ -128,11 +167,7 @@ export default function BattlefieldBackground() {
         context.fill();
       }
 
-      const haze = context.createRadialGradient(width * 0.5, height * 0.42, 20, width * 0.5, height * 0.42, width * 0.55);
-      haze.addColorStop(0, "rgba(117,117,255,0.18)");
-      haze.addColorStop(0.45, "rgba(121,63,250,0.08)");
-      haze.addColorStop(1, "rgba(0,0,0,0)");
-      context.fillStyle = haze;
+      context.fillStyle = hazeGradient;
       context.fillRect(0, 0, width, height);
     };
 
@@ -181,7 +216,7 @@ export default function BattlefieldBackground() {
       context.translate(jet.x, jet.y + bob);
       context.scale(Math.sign(jet.vx), 1);
       context.scale(jet.s, jet.s);
-      context.shadowBlur = 20;
+      context.shadowBlur = quality === "low" ? 8 : 20;
       context.shadowColor = `${jet.color}88`;
       context.fillStyle = "rgba(220,232,255,0.9)";
       context.beginPath();
@@ -228,10 +263,14 @@ export default function BattlefieldBackground() {
       context.fill();
       context.fillStyle = "rgba(114,231,255,0.78)";
       context.fillRect(-16, -4, 32, 4);
-      const beam = context.createRadialGradient(0, 16, 0, 0, 16, 46);
-      beam.addColorStop(0, "rgba(183,255,122,0.22)");
-      beam.addColorStop(1, "rgba(183,255,122,0)");
-      context.fillStyle = beam;
+      if (quality === "high") {
+        const beam = context.createRadialGradient(0, 16, 0, 0, 16, 46);
+        beam.addColorStop(0, "rgba(183,255,122,0.22)");
+        beam.addColorStop(1, "rgba(183,255,122,0)");
+        context.fillStyle = beam;
+      } else {
+        context.fillStyle = "rgba(183,255,122,0.12)";
+      }
       context.beginPath();
       context.moveTo(-24, 12);
       context.lineTo(24, 12);
@@ -246,7 +285,7 @@ export default function BattlefieldBackground() {
       for (const bolt of state.bolts) {
         context.strokeStyle = bolt.color;
         context.lineWidth = bolt.w;
-        context.shadowBlur = 14;
+        context.shadowBlur = quality === "low" ? 5 : 14;
         context.shadowColor = bolt.color;
         context.beginPath();
         context.moveTo(bolt.x, bolt.y);
@@ -262,7 +301,7 @@ export default function BattlefieldBackground() {
         context.rotate(sigil.spin + time * sigil.speed);
         context.strokeStyle = `${sigil.color}bb`;
         context.lineWidth = 2;
-        context.shadowBlur = 22;
+        context.shadowBlur = quality === "low" ? 10 : 22;
         context.shadowColor = sigil.color;
         context.beginPath();
         context.arc(0, 0, sigil.r, 0, Math.PI * 2);
@@ -278,11 +317,15 @@ export default function BattlefieldBackground() {
     const drawBursts = (time) => {
       for (const burst of state.bursts) {
         const radius = burst.r + Math.sin(time * burst.speed + burst.x * 0.01) * 8;
-        const gradient = context.createRadialGradient(burst.x, burst.y, 0, burst.x, burst.y, radius);
-        gradient.addColorStop(0, `rgba(${burst.color},${burst.a})`);
-        gradient.addColorStop(0.4, `rgba(${burst.color},${burst.a * 0.45})`);
-        gradient.addColorStop(1, "rgba(0,0,0,0)");
-        context.fillStyle = gradient;
+        if (quality === "high") {
+          const gradient = context.createRadialGradient(burst.x, burst.y, 0, burst.x, burst.y, radius);
+          gradient.addColorStop(0, `rgba(${burst.color},${burst.a})`);
+          gradient.addColorStop(0.4, `rgba(${burst.color},${burst.a * 0.45})`);
+          gradient.addColorStop(1, "rgba(0,0,0,0)");
+          context.fillStyle = gradient;
+        } else {
+          context.fillStyle = `rgba(${burst.color},${burst.a * 0.3})`;
+        }
         context.beginPath();
         context.arc(burst.x, burst.y, radius, 0, Math.PI * 2);
         context.fill();
@@ -290,15 +333,16 @@ export default function BattlefieldBackground() {
     };
 
     const drawFog = () => {
-      const fog = context.createLinearGradient(0, height * 0.4, 0, height);
-      fog.addColorStop(0, "rgba(2,5,10,0)");
-      fog.addColorStop(0.55, "rgba(5,12,24,0.18)");
-      fog.addColorStop(1, "rgba(2,5,12,0.64)");
-      context.fillStyle = fog;
+      context.fillStyle = fogGradient;
       context.fillRect(0, 0, width, height);
     };
 
     const tick = (now) => {
+      if (!running) return;
+      if (now - last < minFrameDelta) {
+        frame = window.requestAnimationFrame(tick);
+        return;
+      }
       const time = now * 0.001;
       const delta = Math.min((now - last) / 1000, 0.032);
       last = now;
@@ -331,12 +375,36 @@ export default function BattlefieldBackground() {
       frame = window.requestAnimationFrame(tick);
     };
 
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        running = false;
+        window.cancelAnimationFrame(frame);
+        return;
+      }
+      running = true;
+      last = performance.now();
+      frame = window.requestAnimationFrame(tick);
+    };
+
+    const onResize = () => {
+      if (resizedQueued) return;
+      resizedQueued = true;
+      window.requestAnimationFrame(() => {
+        resizedQueued = false;
+        resize();
+      });
+    };
+
     resize();
+    last = performance.now();
     frame = window.requestAnimationFrame(tick);
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", onResize, { passive: true });
+    document.addEventListener("visibilitychange", onVisibilityChange, { passive: true });
 
     return () => {
-      window.removeEventListener("resize", resize);
+      running = false;
+      window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       window.cancelAnimationFrame(frame);
     };
   }, []);
