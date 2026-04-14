@@ -2,7 +2,7 @@ export const resumeData = {
   name: "Sanchit Vasanta Jadhav",
   title: "Game QA Tester Aspirant",
   location: "Chandrapur, Maharashtra",
-  phone: "+91 9022273946",
+  phone: "+91 0000000000",
   email: "Jadhavsanchit835@gmail.com",
   linkedin: "https://linkedin.com/in/Sanchit_Jadhav",
   linkedinLabel: "linkedin.com/in/Sanchit_Jadhav",
