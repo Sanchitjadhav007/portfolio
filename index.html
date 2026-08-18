@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sanchit V. Jadhav | Portfolio</title>
+    <script>
+        try {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.add('light-mode');
+            }
+        } catch (error) {
+            document.documentElement.classList.remove('light-mode');
+        }
+    </script>
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -20,8 +29,14 @@
             <li><a href="#projects">Projects</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
+        <button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false">
+            <span class="theme-toggle-track">
+                <i class="fa-solid fa-moon theme-icon theme-icon-moon" aria-hidden="true"></i>
+                <i class="fa-solid fa-sun theme-icon theme-icon-sun" aria-hidden="true"></i>
+                <span class="theme-toggle-thumb"></span>
+            </span>
+        </button>
     </nav>
-    <iframe src="home.html" frameborder="0" class="background-frame"></iframe>
    
     <!-- Home Section -->
      <section id="home">
@@ -70,14 +85,14 @@ My interests include web development, Blender, and Unreal Engine**, along with e
             <span>59%</span>
         </div>
 
-        <div class="timeline-card active">
+        <div class="timeline-card">
             <div class="circle">2026</div>
             <h3>BCA Graduate</h3>
             <p>Sardar Patel Mahavidyalaya</p>
             <span>CGPA: 6.27</span>
         </div>
 
-        <div class="timeline-card">
+        <div class="timeline-card active">
             <div class="circle">2026</div>
             <h3>Current</h3>
             <p>Learning Java Full Stack Development</p>
@@ -232,12 +247,11 @@ My interests include web development, Blender, and Unreal Engine**, along with e
         <div class="tool">💻 VS Code</div>
         <div class="tool">🗄 SQL</div>
         <div class="tool">🐙 GitHub</div>
-        <div class="tool">  Vercel</div>
-        <div class="tool">🖌 Photoshop</div>
+        <div class="tool">🐙 Vercel</div>
         <div class="tool">🎨 Blender</div>
-        <div class="tool">🎞 DaVinci Resolve</div>
+        <div class="tool">🎞 DaVinci Res</div>
         <div class="tool">🎮 Unreal Engine</div>
-        <div class="tool"></div>
+        <div class="tool">🎮 Unity</div>
 
     </div>
 
@@ -280,6 +294,22 @@ My interests include web development, Blender, and Unreal Engine**, along with e
                     It take 10s-15s to load the game in browser. </p>
                     <div class="project-links">
                         <a href="https://play.unity.com/api/v1/games/game/f804cee4-eea8-47da-8b75-018b2c50c4cd/build/latest/frame"><i class="fa-solid fa-play"></i> Demo</a>
+                    </div>
+                </div>
+
+                 <div class="project-card">
+                    <h4>Game 2</h4>
+                    <p>Not Released, Comming Soon</p>
+                    <div class="project-links">
+                        <a href=""><i class="fa-solid fa-play"></i> Demo</a>
+                    </div>
+                </div>
+
+                 <div class="project-card">
+                    <h4>Game 3</h4>
+                    <p>Not Released, Comming Soon</p>
+                    <div class="project-links">
+                        <a href=""><i class="fa-solid fa-play"></i> Demo</a>
                     </div>
                 </div>
             </div>
@@ -331,119 +361,61 @@ My interests include web development, Blender, and Unreal Engine**, along with e
 
 </div>
 
-<!-- Blender Projects -->
+<!--3D models-->
+
 <div class="project-category">
+<h3>3D Models & Environments</h3>
+<div class="video-grid">
+<div class="video-card">
+            <img src="images/Forklift.png" alt="Forklift 3D model preview" class="blender-model-image">
 
-    <!-- Main Heading -->
-    <h3>3D Modeling & Animation</h3>
-
-    <!-- Blender Grid -->
-    <div class="video-grid">
-
-        <!-- Blender Card 1 -->
-        <div class="video-card">
-            <video controls preload="metadata" playsinline>
-                <source src="images/peace.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-
-            <h4>3D Environment</h4>
-            <p>A game-ready Forest Shrine environment showcasing my 3D modeling, texturing, and environmental design skills.</p>
+            <h4>ForkLift cart</h4>
+            <p>A game-ready optimized 3D Forklift Model.</p>
 
             <div class="project-links">
-                <a href="#" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-cube"></i> View in 3D
+                <a href="https://sketchfab.com/jadhavsanchit835" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-cube"></i> View 3D
+                </a>
+                <a href="assets/Forklift.blend" download>
+                    <i class="fa-solid fa-download"></i> Download
                 </a>
             </div>
         </div>
 
-        <!-- Blender Card 2 -->
-        <div class="video-card">
-            <video controls preload="metadata" playsinline>
-                <source src="" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+<div class="video-card">
+            <img src="images/Forklift.png" alt="Forklift 3D model preview" class="blender-model-image">
 
-            <h4>2nd Video</h4>
-            <p>Description for the second video.</p>
+            <h4>ForkLift cart</h4>
+            <p>A game-ready optimized 3D Forklift Model.</p>
+
             <div class="project-links">
-                <a href="#" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-cube"></i> View in 3D
+                <a href="https://sketchfab.com/jadhavsanchit835" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-cube"></i> View 3D
+                </a>
+                <a href="assets/Forklift.blend" download>
+                    <i class="fa-solid fa-download"></i> Download
                 </a>
             </div>
         </div>
 
-        <!-- Blender Card 3 -->
-        <div class="video-card">
-            <video controls preload="metadata" playsinline>
-                <source src="" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+<div class="video-card">
+            <img src="images/Forklift.png" alt="Forklift 3D model preview" class="blender-model-image">
 
-            <h4>3rd Video</h4>
-            <p>Description for the third video.</p>
+            <h4>ForkLift cart</h4>
+            <p>A game-ready optimized 3D Forklift Model.</p>
+
             <div class="project-links">
-                <a href="#" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-cube"></i> View in 3D
+                <a href="https://sketchfab.com/jadhavsanchit835" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-cube"></i> View 3D
+                </a>
+                <a href="assets/Forklift.blend" download>
+                    <i class="fa-solid fa-download"></i> Download
                 </a>
             </div>
         </div>
-
-    </div>
-
 </div>
-<!-- LeetCode Progress Section -->
-    <section id="leetcode-progress" class="leetcode-section">
-        <h2 class="section-title">LeetCode <span>Progress</span></h2>
+</div>
 
-        <div class="leetcode-card">
-            <div class="leetcode-header">
-                <h3>LEETCODE PROGRESS</h3>
-                <p>Consistency, problem-solving, and steady growth</p>
-            </div>
-
-            <div class="leetcode-stats">
-                <div class="stat">
-                    <span>🟢 Solved</span>
-                    <strong>8</strong>
-                </div>
-                <div class="stat">
-                    <span>🟡 Ranking</span>
-                    <strong>5,000,000</strong>
-                </div>
-                <div class="stat">
-                    <span>🔥 Current Streak</span>
-                    <strong>3 D</strong>
-                </div>
-                <div class="stat">
-                    <span>⭐ Contest Rating</span>
-                    <strong>0</strong>
-                </div>
-            </div>
-
-            <div class="leetcode-progress-bar">
-                <div class="leetcode-progress-fill"></div>
-            </div>
-            <div class="leetcode-progress-label">8 / 3500</div>
-
-            <div class="difficulty-row">
-                <div class="difficulty-item">
-                    <span>Easy</span>
-                    <div class="difficulty-bar"><div class="difficulty-fill easy"></div></div>
-                </div>
-                <div class="difficulty-item">
-                    <span>Medium</span>
-                    <div class="difficulty-bar"><div class="difficulty-fill medium"></div></div>
-                </div>
-                <div class="difficulty-item">
-                    <span>Hard</span>
-                    <div class="difficulty-bar"><div class="difficulty-fill hard"></div></div>
-                </div>
-            </div>
-
-            <a href="https://leetcode.com/u/Sanchit_j007/" target="_blank" rel="noopener noreferrer" class="leetcode-btn">View Profile</a>
-        </div>
-    </section>
 
 <!-- Certificates Section -->
 
@@ -463,11 +435,11 @@ My interests include web development, Blender, and Unreal Engine**, along with e
                 </div>
             </div>
             <div class="certificate-card">
-                <img src="images/certificate2.jpg" alt="Certificate 2">
+                <img src="images/certificate102.jpeg" alt="Certificate 2">
                 <h4>Certificate Title 2</h4>
                 <p>Description of the certificate.</p>
                 <div class="C-links">
-                  <a href="assets/tata certificate.pdf" target="_blank" rel="noopener noreferrer">
+                  <a href="assets/certificate102.pdf" target="_blank" rel="noopener noreferrer">
                       <i class="fa-solid fa-cube"></i> View pdf
                   </a>
                 </div>
@@ -521,5 +493,6 @@ My interests include web development, Blender, and Unreal Engine**, along with e
         </div>
     </section>
 
+    <script src="script.js"></script>
 </body>
 </html>

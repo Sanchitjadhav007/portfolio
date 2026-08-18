@@ -8,7 +8,20 @@
             --dark-red: #800000;
             --glow: 0 0 15px rgba(230, 0, 0, 0.6);
             --glow-strong: 0 0 25px rgba(230, 0, 0, 0.9);
-            --transition: all 0.3s ease;
+            --transition: all 0.1s ease-out;
+            color-scheme: dark;
+        }
+
+        html.light-mode {
+            --bg-color: #f7f4ef;
+            --bg-alt: #ffffff;
+            --text-main: #181818;
+            --text-muted: #5f5f5f;
+            --primary-red: #c40000;
+            --dark-red: #d7a0a0;
+            --glow: 0 0 16px rgba(196, 0, 0, 0.22);
+            --glow-strong: 0 0 24px rgba(196, 0, 0, 0.35);
+            color-scheme: light;
         }
 
         * {
@@ -23,6 +36,12 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.6;
+            transition: background-color .45s ease, color .45s ease;
+        }
+
+        html.theme-changing *,
+        html.theme-changing body {
+            transition: none !important;
         }
 
         /* Navigation */
@@ -69,6 +88,65 @@
             text-shadow: var(--glow);
         }
 
+        .theme-toggle {
+            width: 76px;
+            height: 38px;
+            border: 1px solid rgba(230, 0, 0, .5);
+            border-radius: 999px;
+            background: transparent;
+            padding: 3px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            box-shadow: var(--glow);
+        }
+
+        .theme-toggle-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            border-radius: inherit;
+            background: #171717;
+            color: #f1a4a4;
+            transition: background-color .35s ease, color .35s ease;
+        }
+
+        .theme-icon {
+            position: relative;
+            z-index: 2;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .theme-icon-sun {
+            color: #ffd35a;
+        }
+
+        .theme-icon-moon {
+            color: #d7e2ff;
+        }
+
+        .theme-toggle-thumb {
+            position: absolute;
+            z-index: 1;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #2f2f2f, #060606);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .35);
+            transition: transform .45s cubic-bezier(.22, 1, .36, 1), background .35s ease;
+        }
+
         /* Layout & Sections */
         section {
             min-height: 100vh;
@@ -112,7 +190,6 @@
             align-items: center;
             justify-content: space-between;
             gap: 2rem;
-            margin-top:275px;
             width: 100%;
             height: 100px;
         }
@@ -712,6 +789,7 @@ body{
     
 }
 
+
 .video-card:hover{
    transform:translateY(-8px);
 
@@ -722,12 +800,15 @@ body{
     color:#ff5555;
 }
 
-.video-card video{
+.video-card video,
+.blender-model-image{
     width: 100%;
     height: 220px;
     border: none;
     border-radius: 10px;
     background: #000;
+    display: block;
+    object-fit: cover;
 }
 
 .video-card h4{
@@ -1030,6 +1111,133 @@ body{
             box-shadow: var(--glow);
         }
 
+        .theme-wipe {
+            position: fixed;
+            width: 48px;
+            height: 48px;
+            left: var(--wipe-x);
+            top: var(--wipe-y);
+            border-radius: 50%;
+            background: var(--wipe-color);
+            transform: translate(-50%, -50%) scale(0);
+            transform-origin: center;
+            pointer-events: none;
+            z-index: 5000;
+            will-change: transform, opacity;
+            animation: themeWipe .82s cubic-bezier(.65, 0, .35, 1) forwards;
+        }
+
+        @keyframes themeWipe {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0);
+            }
+
+            72% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(220);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(220);
+            }
+        }
+
+        html.light-mode nav {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom-color: rgba(196, 0, 0, .22);
+            box-shadow: 0 8px 22px rgba(40, 22, 22, .08);
+        }
+
+        html.light-mode .theme-toggle-track {
+            background: #fff5cc;
+            color: #171717;
+        }
+
+        html.light-mode .theme-toggle-thumb {
+            transform: translateX(34px);
+            background: linear-gradient(145deg, #fff7c7, #ffbe32);
+            box-shadow: 0 4px 14px rgba(202, 126, 0, .26);
+        }
+
+        html.light-mode section:nth-child(even),
+        html.light-mode #journey,
+        html.light-mode body {
+            background: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        html.light-mode section:nth-child(odd),
+        html.light-mode #skills-section,
+        html.light-mode #projects,
+        html.light-mode #contact {
+            background: var(--bg-alt);
+        }
+
+        html.light-mode .timeline-card,
+        html.light-mode .skill-card,
+        html.light-mode .tool,
+        html.light-mode .project-card,
+        html.light-mode .video-card,
+        html.light-mode .certificate-card,
+        html.light-mode .leetcode-card,
+        html.light-mode .stat,
+        html.light-mode .contact-container,
+        html.light-mode .social-item i {
+            background: #ffffff;
+            border-color: rgba(196, 0, 0, .18);
+            box-shadow: 0 12px 34px rgba(47, 27, 27, .08);
+        }
+
+        html.light-mode .leetcode-card {
+            background: linear-gradient(145deg, #ffffff, #fff7f7);
+        }
+
+        html.light-mode .circle {
+            background: #ffffff;
+            color: #171717;
+        }
+
+        html.light-mode .home-content h2,
+        html.light-mode .about-summary,
+        html.light-mode .section-title p,
+        html.light-mode .category-tabs span,
+        html.light-mode .project-card p,
+        html.light-mode .video-card p,
+        html.light-mode .certificate-card p,
+        html.light-mode .leetcode-header p,
+        html.light-mode .stat span,
+        html.light-mode .difficulty-item span,
+        html.light-mode .social-item {
+            color: var(--text-muted);
+        }
+
+        html.light-mode .timeline-card h3,
+        html.light-mode .timeline-card p,
+        html.light-mode .skill-name,
+        html.light-mode .leetcode-header h3,
+        html.light-mode .leetcode-progress-label,
+        html.light-mode .social-item i {
+            color: var(--text-main);
+        }
+
+        html.light-mode .progress,
+        html.light-mode .leetcode-progress-bar,
+        html.light-mode .difficulty-bar,
+        html.light-mode .contact-form input,
+        html.light-mode .contact-form textarea {
+            background: #f0e8e8;
+            border-color: rgba(196, 0, 0, .18);
+            color: var(--text-main);
+        }
+
+        html.light-mode .project-card video,
+        html.light-mode .video-card video,
+        html.light-mode .certificate-card img {
+            background: #ece5e5;
+        }
+
         /* Responsive Design */
         @media (max-width: 900px) {
             #home, .contact-container {
@@ -1051,5 +1259,293 @@ body{
             }
             nav ul {
                 display: none; /* In a real app, you'd add a hamburger menu here */
+            }
+        }
+
+        /* Mobile layout fixes */
+        @media (max-width: 700px) {
+            html,
+            body {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            body {
+                line-height: 1.55;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 12px;
+                padding: 12px 5%;
+            }
+
+            nav .logo {
+                font-size: 1.25rem;
+            }
+
+            nav ul {
+                order: 3;
+                display: flex;
+                width: 100%;
+                gap: 10px;
+                overflow-x: auto;
+                padding: 4px 0 2px;
+                scrollbar-width: none;
+            }
+
+            nav ul::-webkit-scrollbar {
+                display: none;
+            }
+
+            nav ul li {
+                flex: 0 0 auto;
+            }
+
+            nav ul li a {
+                display: block;
+                padding: 6px 10px;
+                border: 1px solid rgba(230, 0, 0, .25);
+                border-radius: 999px;
+                font-size: .85rem;
+                white-space: nowrap;
+            }
+
+            .theme-toggle {
+                width: 68px;
+                height: 34px;
+                margin-left: auto;
+            }
+
+            .theme-toggle-track {
+                padding: 0 8px;
+            }
+
+            .theme-toggle-thumb {
+                top: 3px;
+                left: 3px;
+                width: 22px;
+                height: 22px;
+            }
+
+            html.light-mode .theme-toggle-thumb {
+                transform: translateX(31px);
+            }
+
+            section {
+                min-height: auto;
+                padding: 96px 5% 64px;
+            }
+
+            #home {
+                min-height: 100svh;
+                height: auto;
+                padding-top: 148px;
+                gap: 28px;
+            }
+
+            .home-content h1 {
+                font-size: clamp(2.15rem, 12vw, 3rem);
+                line-height: 1.05;
+            }
+
+            .home-content h2 {
+                font-size: 1.05rem;
+            }
+
+            .home-content p,
+            .about-summary {
+                font-size: .98rem;
+            }
+
+            .home-buttons {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .btn,
+            .project-links a,
+            .leetcode-btn {
+                width: 100%;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                white-space: normal;
+                overflow-wrap: anywhere;
+            }
+
+            .home-image img {
+                width: min(74vw, 280px);
+                height: min(74vw, 280px);
+            }
+
+            .section-title,
+            .tools-title {
+                font-size: clamp(1.75rem, 9vw, 2.25rem);
+                line-height: 1.12;
+                letter-spacing: 1px;
+                margin-bottom: 32px;
+            }
+
+            #journey {
+                padding: 72px 5%;
+            }
+
+            .section-title h2 {
+                font-size: clamp(1.9rem, 9vw, 2.4rem);
+            }
+
+            .timeline {
+                width: 100%;
+                max-width: 100%;
+                gap: 32px;
+            }
+
+            .timeline::before {
+                display: none;
+            }
+
+            .timeline-card {
+                width: 100%;
+                max-width: 330px;
+                margin: 0 auto 28px;
+            }
+
+            .skills-section,
+            .Certificate-section {
+                width: 100%;
+            }
+
+            .category-tabs {
+                gap: 10px;
+                margin-bottom: 34px;
+            }
+
+            .category-tabs span {
+                padding: 6px 10px;
+                border: 1px solid rgba(230, 0, 0, .25);
+                border-radius: 999px;
+                font-size: .9rem;
+            }
+
+            .skills-container,
+            .project-grid,
+            .video-grid,
+            .certificate-grid,
+            .tools-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 18px;
+                width: 100%;
+            }
+
+            .skill-card,
+            .project-card,
+            .video-card,
+            .certificate-card,
+            .tool,
+            .leetcode-card,
+            .contact-container {
+                width: 100%;
+                max-width: 100%;
+                border-radius: 14px;
+                overflow: hidden;
+            }
+
+            .skill-card {
+                padding: 22px;
+            }
+
+            .skill-card h2,
+            .project-category h3 {
+                font-size: 1.15rem;
+                line-height: 1.25;
+            }
+
+            .project-card p {
+                height: auto;
+                min-height: 0;
+            }
+
+            .project-links {
+                flex-direction: column;
+            }
+
+            .project-card video,
+            .video-card video,
+            .certificate-card img {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 16 / 10;
+                object-fit: cover;
+            }
+
+            .video-card p,
+            .certificate-card p {
+                font-size: .95rem;
+            }
+
+            .leetcode-section {
+                padding: 64px 5%;
+            }
+
+            .leetcode-card {
+                padding: 22px;
+            }
+
+            .stat {
+                align-items: flex-start;
+                gap: 8px;
+                flex-direction: column;
+            }
+
+            .contact-container {
+                gap: 28px;
+                padding: 22px;
+            }
+
+            .contact-form input,
+            .contact-form textarea {
+                font-size: 1rem;
+            }
+
+            .social-item {
+                align-items: flex-start;
+                font-size: .95rem;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+
+            .social-item i {
+                flex: 0 0 40px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            nav ul li a {
+                font-size: .8rem;
+                padding: 6px 8px;
+            }
+
+            section {
+                padding-left: 4%;
+                padding-right: 4%;
+            }
+
+            .skill-card,
+            .project-card,
+            .video-card,
+            .certificate-card,
+            .leetcode-card,
+            .contact-container {
+                padding: 18px;
+            }
+
+            .home-image img {
+                width: min(78vw, 240px);
+                height: min(78vw, 240px);
             }
         }
